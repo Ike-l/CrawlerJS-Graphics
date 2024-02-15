@@ -1,0 +1,64 @@
+       const adjustSphereIndex = function(x) {
+    return Math.floor(x / 3) * 2 + x
+  }
+  class sphere {
+    constructor(radius, center) {
+      this.radius = radius
+      this.center = center
+
+      const smallAngle = 1e-1 // handles precision
+      let positions = []
+      let positiveSemi
+      let negativeSemi
+      for (let strip = 0; strip < 2 * Math.PI; strip += smallAngle) {
+        positiveSemi = []
+        negativeSemi = []
+        for (let section = 0; section <= Math.PI; section += smallAngle) {
+          positiveSemi.push([this.radius * Math.sin(section) * Math.cos(strip) + this.center.x, this.radius * Math.cos(section) + this.center.y, this.radius * Math.sin(section) * Math.sin(strip) + this.center.z])
+        }
+        for (let section = 0; section > -Math.PI; section -= smallAngle) {
+          positiveSemi.push([this.radius * Math.sin(strip) * Math.cos(section) + this.center.x, this.radius * Math.cos(strip) + this.center.y, this.radius * Math.sin(strip) * Math.sin(section) + this.center.z])
+        }
+        positions = [...positions, [...positiveSemi, ...negativeSemi]]
+      }
+
+      this.positions = positions
+      let index = []
+      const sliceLength = this.positions[0].length
+      for (let slice = 0; slice < this.positions.length - 1; slice++) {
+        for (let section = 0; section < sliceLength - 1; section++) {
+          index.push(section + slice * sliceLength, section + 1 + slice * sliceLength, section + 1 + slice * sliceLength + sliceLength)
+        }
+        index.push(sliceLength - 1 + slice * sliceLength, slice * sliceLength, slice * sliceLength + sliceLength)
+        for (let section = sliceLength - 2; section > -1; section--) {
+          index.push(slice * sliceLength + section, slice * sliceLength + section + sliceLength, slice * sliceLength + section + sliceLength + 1)
+        }
+        index.push(sliceLength - 1 + slice * sliceLength, sliceLength - 1 + slice * sliceLength + sliceLength, sliceLength + slice * sliceLength)
+      }
+      for (let pointA = 0; pointA < this.positions[this.positions.length - 1].length; pointA++) {
+        index.push(pointA + (this.positions.length - 1) * sliceLength, pointA + 1 + (this.positions.length - 1) * sliceLength, pointA + 1)
+      }
+      for (let pointA = this.positions[this.positions.length - 1]; pointA > -1; pointA--) {
+        index.push(pointA + sliceLength * (this.positions.length - 1), pointA, pointA + 1)
+      }
+      this.index = index
+      let myNewArray = this.positions.reduce(function(prev, curr) {
+        return prev.concat(curr)
+      })
+      myNewArray = myNewArray.reduce(function(prev, curr) {
+        return prev.concat(curr)
+      })
+      this.positions = myNewArray
+
+      for (let point3 = 3; point3 < this.positions.length; point3 += 6) {
+        this.positions = [...this.positions.slice(0, point3), ...[0.5, 0.5, 0.5], ...this.positions.slice(point3)]
+      }
+      // need to shift every index value index 
+      for (index in this.index) {
+        this.index[index] = adjustSphereIndex(this.index[index])
+      }
+    }
+  }
+
+  let spheres = []
+  spheres.push(new sphere(1, { x: 0, y: 0, z: 0 }))
