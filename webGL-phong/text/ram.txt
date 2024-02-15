@@ -1,0 +1,79 @@
+gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_SHORT, 0) // type of index offset 0
+
+buffers = createBuffers(object.positions, object.colors, object.indices)
+
+gl.vertexAttribPointer(
+      positionAttributeLocation,3,// number of elements per attribute
+      gl.FLOAT, // the type of elements
+      gl.FALSE, 
+      0, // size of an individual vertex
+      0 // offset from the beginning of a single vertex to this attribute
+  )
+
+  I NEED TO OPTIMIZE BY SEEING IF THERE ARE MULTIPLE OBJECTS WITH SAME BUFFER / POINTERS ETC.
+      // dont need to do buffers if they are the same, for optimized
+    // or programs
+    // so check if different
+    // can sort by buffers or programs
+
+    // make this a shape method
+this.buffers = createBuffers(this.positions, this.colors, this.indices)
+
+const rotationQ = quat.create()
+quat.setAxisAngle(rotationQ, [0, 1, 0], random0)
+const rotationM = mat4.create()
+mat4.fromQuat(rotationM, rotationQ)
+mat4.multiply(this.worldMatrix, this.worldMatrix, rotationM)
+
+    check performance using excel
+
+//gl.enable(gl.CULL_FACE)
+//gl.frontFace(gl.CCW)
+//gl.cullFace(gl.BACK)
+
+// https://stackoverflow.com/questions/25962958/calling-a-javascript-function-in-another-js-file
+
+// need setup function
+
+
+
+
+
+
+
+
+    objectsToDraw.push(new Plane({
+    width: 100,
+    length: 100
+}))
+const rotationQ = quat.create()
+quat.setAxisAngle(rotationQ, [0, 1, 0], Math.PI / 2)
+objectsToDraw.push(new Line({
+    length: 100,
+    rotation: rotationQ
+}))
+
+objectsToDraw.push(new Line({
+    length: 100
+}))
+for (let count = 0; count < 200; count++) {
+    const random0 = Math.floor(Math.random() * 2 * Math.PI)
+    const rotationQ = quat.create()
+    quat.setAxisAngle(rotationQ, [0, 1, 0], random0)
+    const random1 = Math.floor(Math.random() * 100) - 50
+    const random2 = Math.floor(Math.random() * 50) + 2
+    const random3 = Math.floor(Math.random() * 100) - 50
+    const random4 = Math.floor(Math.random() * 10)
+    objectsToDraw.push(new Cube({
+        center: [random1, random2, random3],
+        rotation: rotationQ,
+        width: random4
+    }))
+    objectsToDraw.push(new Sphere({
+        center: [random3, random2, random1],
+        rotation: rotationQ,
+        radius: random4
+    }))
+
+}
+let counter = 0
